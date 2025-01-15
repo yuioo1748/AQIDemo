@@ -22,6 +22,14 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         return view
     }()
     
+    //customTabBarView 外框線
+    private lazy var coloredView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .lightGray.withAlphaComponent(0.5)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private lazy var weatherTabButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(systemName: "sun.max")?.resize(to: CGSize(width: 25, height: 25)), for: .normal)
@@ -60,6 +68,7 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         label.text = stationInfo?.station.siteName ?? "無測站資料"  // 使用測站名稱
         label.font = .systemFont(ofSize: 35, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.applyShadow()
         return label
     }()
     
@@ -69,6 +78,7 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         label.text = todayRecords.first?.aqi ?? records.first?.aqi ?? "0"  // 顯示 AQI 值
         label.font = .systemFont(ofSize: 96, weight: .thin)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.applyShadow()
         return label
     }()
     
@@ -77,6 +87,7 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         label.text = "(AQI)"  // 顯示 AQI 值
         label.font = .systemFont(ofSize: 16, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.applyShadow()
         return label
     }()
     
@@ -86,6 +97,7 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         label.font = .systemFont(ofSize: 20, weight: .regular)
         label.alpha = 0
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.applyShadow()
         return label
     }()
     
@@ -95,6 +107,7 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         label.font = .systemFont(ofSize: 10, weight: .bold)
         label.alpha = 0
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.applyShadow()
         return label
     }()
     
@@ -104,6 +117,7 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         label.font = .systemFont(ofSize: 20, weight: .regular)
         label.alpha = 0
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.applyShadow()
         return label
     }()
     
@@ -112,7 +126,7 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
-        
+        label.applyShadow(opacity: 0.1)
         // 設定初始值
         if let aqiValue = Int((todayRecords.first?.aqi ?? records.first?.aqi) ?? "0") {
             updateAqiStatus(value: aqiValue, label: label)
@@ -126,7 +140,7 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         label.font = .systemFont(ofSize: 20, weight: .medium)
         label.alpha = 0
         label.translatesAutoresizingMaskIntoConstraints = false
-        
+        label.applyShadow(opacity: 0.1)
         // 設定初始值
             if let aqiValue = Int((todayRecords.first?.aqi ?? records.first?.aqi) ?? "0") {
                 updateAqiStatus(value: aqiValue, label: label)
@@ -177,6 +191,7 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         table.translatesAutoresizingMaskIntoConstraints = false
 //        table.isScrollEnabled = true  // 禁用 TableView 的滾動
         table.backgroundColor = .black.withAlphaComponent(0.1)
+        table.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         return table
     }()
     
@@ -225,6 +240,7 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         
         view.addSubview(scrollView)
         view.addSubview(customTabBarView)
+        view.addSubview(coloredView)
         
         scrollView.addSubview(contentView)
         
@@ -249,6 +265,8 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: customTabBarView.topAnchor)
+            
+            
         ])
         
         // ContentView 約束 - 這很重要
@@ -303,6 +321,12 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
             customTabBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             customTabBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             customTabBarView.heightAnchor.constraint(equalToConstant: 80),
+            
+            // 在底部添加 coloredView 的約束
+            coloredView.bottomAnchor.constraint(equalTo: customTabBarView.topAnchor, constant: 1),
+            coloredView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            coloredView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            coloredView.heightAnchor.constraint(equalToConstant: 1), // 您可以調整高度
             
             // WeatherTab 按鈕約束
             weatherTabButton.leadingAnchor.constraint(equalTo: customTabBarView.leadingAnchor, constant: 20),
@@ -415,7 +439,7 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         airInfoTableView.dataSource = self
         
         // 註冊自定義 Cell
-        airInfoTableView.register(AirInfoTabelViewCell.self, forCellReuseIdentifier: "AirInfoCell")
+        airInfoTableView.register(AirInfoTableViewCell.self, forCellReuseIdentifier: "AirInfoCell")
         
         
         airInfoTableView.layer.cornerRadius = 20 // 圓角
@@ -443,7 +467,7 @@ extension WeatherDetailViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "AirInfoCell", for: indexPath) as? AirInfoTabelViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "AirInfoCell", for: indexPath) as? AirInfoTableViewCell else {
             return UITableViewCell()
         }
         

@@ -18,22 +18,6 @@ protocol APIConfiguration {
     var headers: HTTPHeaders? { get }   // 請求標頭
 }
 
-class APIKeyConfiguration {
-    // 單例模式
-    static let shared = APIKeyConfiguration()
-    
-    // 私有初始化方法
-    private init() {}
-    
-    // API Key 作為私有屬性
-    private let apiKey = "1aec3832-51d3-460d-97a1-3072f4f8e821"
-    
-    // 提供 API Key 的方法
-    func getAPIKey() -> String {
-        return apiKey
-    }
-}
-
 // MARK: - 網路請求管理器
 class RestManager {
     // MARK: - 屬性
@@ -45,7 +29,12 @@ class RestManager {
     private let baseURL = "https://data.moenv.gov.tw/api/"
     
     // API Key 作為私有屬性
-        private let apiKey = "1aec3832-51d3-460d-97a1-3072f4f8e821"
+    private let apiKey = ""
+    
+    // 提供 API Key 的方法
+    func getAPIKey() -> String {
+        return apiKey
+    }
     
     /// 預設的請求標頭
     private var defaultHeaders: HTTPHeaders = [
@@ -131,7 +120,7 @@ struct AQIConfiguration: APIConfiguration {
     init(limit: Int = 3) {
         self.path = "v2/aqx_p_434"
         self.parameters = [
-            "api_key": APIKeyConfiguration.shared.getAPIKey(),
+            "api_key": RestManager.shared.getAPIKey(),
             "limit": String(limit)
         ]
     }
@@ -147,7 +136,7 @@ struct TodayAQIConfiguration: APIConfiguration {
     init(limit: Int = 3) {
         self.path = "v2/aqx_p_432"
         self.parameters = [
-            "api_key": APIKeyConfiguration.shared.getAPIKey(),
+            "api_key": RestManager.shared.getAPIKey(),
             "limit": String(limit)
         ]
     }
@@ -163,7 +152,7 @@ struct StationConfiguration: APIConfiguration {
     init(limit: Int = 1000) {  // 預設取得所有測站資料
         self.path = "v2/aqx_p_07"
         self.parameters = [
-            "api_key": APIKeyConfiguration.shared.getAPIKey(),
+            "api_key": RestManager.shared.getAPIKey(),
             "limit": String(limit)
         ]
     }

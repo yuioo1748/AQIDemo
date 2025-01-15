@@ -1,5 +1,5 @@
 //
-//  AirInfoTabelViewCell.swift
+//  AirInfoTableViewCell.swift
 //  AirQualityDemo
 //
 //  Created by AndyHsieh on 2025/1/10.
@@ -9,7 +9,7 @@ import Foundation
 
 import UIKit
 
-class AirInfoTabelViewCell: UITableViewCell {
+class AirInfoTableViewCell: UITableViewCell {
     // 主標籤
     private let mainLabel: UILabel = {
         let label = UILabel()
@@ -47,7 +47,7 @@ class AirInfoTabelViewCell: UITableViewCell {
         
         // 設置約束
         NSLayoutConstraint.activate([
-            mainLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+            mainLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25),
             mainLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             
             airValueLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -70),
