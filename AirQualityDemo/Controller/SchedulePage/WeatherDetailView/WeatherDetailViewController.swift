@@ -289,7 +289,7 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
             aqiUnitLabel.leadingAnchor.constraint(equalTo: largeAqiLabel.trailingAnchor, constant: 3),
             aqiUnitLabel.bottomAnchor.constraint(equalTo: largeAqiLabel.bottomAnchor, constant: -24),
             
-            smallAqiLabel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 50),
+            smallAqiLabel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 40),
             smallAqiLabel.trailingAnchor.constraint(equalTo: contentView.centerXAnchor, constant: -35),
             
             smallAqiUnitLabel.leadingAnchor.constraint(equalTo: smallAqiLabel.trailingAnchor, constant: 1),
@@ -359,6 +359,8 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
     // MARK: - UIScrollViewDelegate
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
+        //調整的減速行為來讓滾動自然且絲滑, 調整的範圍大約是 0.0（瞬間停止）到 1.0（無限滑動）
+        scrollView.decelerationRate = UIScrollView.DecelerationRate(rawValue: 1)
         
         // aqiStatusLabel 在前 30 點距離內快速消失 (0-30)
         let statusLabelAlpha = max(0, 1 - (offsetY / 30))
@@ -445,7 +447,7 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         airInfoTableView.layer.cornerRadius = 20 // 圓角
         airInfoTableView.rowHeight = 44 // 可以根據需要調整高度
         
-        // 4. 設定 style 屬性
+        // 設定 style 屬性
         airInfoTableView.sectionHeaderTopPadding = 1  // iOS 15 及以上
     }
 }

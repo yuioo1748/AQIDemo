@@ -8,6 +8,6 @@ https://data.moenv.gov.tw/paradigm
 
 BurgerTabelDemoT/Service/RestManager.swift
 
-let apiKey: String = ""
+private let apiKey = ""
 
 填入你的 API Key 即可

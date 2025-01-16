@@ -79,5 +79,9 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("位置更新失敗：\(error.localizedDescription)")
+        
+        if let clError = error as? CLError {
+               print("CLError code: \(clError.code)")
+           }
     }
 }

@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:AirQualityDemo/Myoffice.gpx">
+   </FileRef>
+   <FileRef
       location = "group:AirQualityDemo.xcodeproj">
    </FileRef>
    <FileRef

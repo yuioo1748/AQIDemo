@@ -11,8 +11,6 @@ import UIKit
 class AQITableViewCell: UITableViewCell {
     //    private let emitterLayer = CAEmitterLayer() //粒子效果
     private let gradientLayer = CAGradientLayer()
-    private let blurEffect = UIBlurEffect(style: .light)
-    private let blurView: UIVisualEffectView
     
     // 我的位置
     let myLocationLabel: UILabel = {
@@ -111,7 +109,6 @@ class AQITableViewCell: UITableViewCell {
     //    }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        blurView = UIVisualEffectView(effect: blurEffect)
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
         selectionStyle = .none
@@ -131,10 +128,7 @@ class AQITableViewCell: UITableViewCell {
         // 可以添加圓角
         contentView.layer.cornerRadius = 20
         contentView.layer.masksToBounds = true
-        
-        //        setupEmitter() //粒子動畫
-        //        setupColorChange()
-        
+                
         contentView.addSubview(myLocationLabel)
         contentView.addSubview(stationNameLabel)
         contentView.addSubview(distanceLabel)
@@ -189,68 +183,17 @@ class AQITableViewCell: UITableViewCell {
             
             pm25ValueLabel.leadingAnchor.constraint(equalTo: twoFiveLabel.trailingAnchor, constant: 3),
             pm25ValueLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
-            pm25ValueLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
-            
+            pm25ValueLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             
             //            // 監測時間
             //            dateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             //            dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15)
         ])
+        
+        // 設置粒子效果
+        //        emitterLayer.setupDefaultParticleEffect(in: bounds)
+        //        contentView.layer.insertSublayer(emitterLayer, at: 0)
     }
-    
-    //    private func setupEmitter() {
-    //        emitterLayer.frame = bounds
-    //            emitterLayer.emitterPosition = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
-    //            emitterLayer.emitterShape = .circle
-    //            emitterLayer.emitterSize = CGSize(width: bounds.width, height: bounds.height)
-    //            emitterLayer.emitterMode = .surface
-    //
-    //            // 創建更多不同的粒子
-    //            let particleCell1 = createParticle(color: UIColor.white.withAlphaComponent(0.4), scale: 0.08, birthRate: 4)
-    //            let particleCell2 = createParticle(color: UIColor.white.withAlphaComponent(0.3), scale: 0.05, birthRate: 5)
-    //            let particleCell3 = createParticle(color: UIColor.white.withAlphaComponent(0.2), scale: 0.03, birthRate: 6)
-    //        let particleCell4 = createParticle(color: UIColor.red.withAlphaComponent(0.6), scale: 0.08, birthRate: 7)
-    //        let particleCell5 = createParticle(color: UIColor.black.withAlphaComponent(0.9), scale: 0.1, birthRate: 8)
-    //        let particleCell6 = createParticle(color: UIColor.blue.withAlphaComponent(0.2), scale: 0.03, birthRate: 9)
-    //
-    //            emitterLayer.emitterCells = [particleCell1, particleCell2, particleCell3,
-    //                                         particleCell4, particleCell5, particleCell6]
-    //
-    //            // 將 emitterLayer 插入到最底層
-    //            contentView.layer.insertSublayer(emitterLayer, at: 0)
-    //        }
-    
-    //    func setupColorChange() {
-    //        gradientLayer.removeFromSuperlayer()  // 先移除舊的
-    //
-    //        gradientLayer.frame = bounds
-    //        gradientLayer.colors = [
-    //            //            UIColor(hex: 0x7BEFBB).cgColor,          // 實色
-    //            //            UIColor(hex: 0x7BEFBB).withAlphaComponent(0.5).cgColor  // 半透明
-    //            UIColor.red.cgColor,  // 使用完全不同的顏色來測試
-    //            UIColor.blue.cgColor
-    //        ]
-    //        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
-    //        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
-    //        gradientLayer.cornerRadius = 20
-    //
-    //        // 添加動畫
-    //        let gradientChangeAnimation = CABasicAnimation(keyPath: "colors")
-    //        gradientChangeAnimation.fromValue = gradientLayer.colors
-    //        gradientChangeAnimation.toValue = [
-    //            UIColor(hex: 0x7BEFBB).withAlphaComponent(0.5).cgColor,
-    //            UIColor(hex: 0x7BEFBB).cgColor
-    //        ]
-    //        gradientChangeAnimation.duration = 2.0
-    //        gradientChangeAnimation.autoreverses = true
-    //        gradientChangeAnimation.repeatCount = .infinity
-    //
-    //        gradientLayer.add(gradientChangeAnimation, forKey: "colorChange")
-    //
-    //        // 確保在最底層插入漸層
-    //        contentView.layer.insertSublayer(gradientLayer, at: 0)
-    //    }
-    
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -260,76 +203,20 @@ class AQITableViewCell: UITableViewCell {
         gradientLayer.masksToBounds = true
         
         //粒子效果
-        //                emitterLayer.frame = bounds
-        //                emitterLayer.emitterPosition = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
+        //        emitterLayer.frame = bounds
+        //        emitterLayer.emitterPosition = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
     }
-    
-    //    private func createParticle(color: UIColor, scale: CGFloat, birthRate: Float) -> CAEmitterCell {
-    //        let cell = CAEmitterCell()
-    //
-    //        // 增加粒子的產生率和持續時間
-    //        cell.birthRate = birthRate
-    //        cell.lifetime = 4.0
-    //        cell.lifetimeRange = 2.0
-    //
-    //        // 調整運動參數
-    //        cell.velocity = 50
-    //        cell.velocityRange = 20
-    //        cell.scale = scale
-    //        cell.scaleRange = scale/3
-    //        cell.scaleSpeed = -scale/8
-    //
-    //        // 增加旋轉效果
-    //        cell.spin = CGFloat.pi
-    //        cell.spinRange = CGFloat.pi/2
-    //        cell.emissionRange = CGFloat.pi * 2
-    //
-    //        // 調整粒子外觀
-    //        let size = CGSize(width: 30, height: 30)
-    //        cell.contents = drawParticleImage(size: size)?.cgImage
-    //        cell.color = color.cgColor
-    //        cell.alphaSpeed = -0.2
-    //
-    //        return cell
-    //    }
-    
-    //    private func drawParticleImage(size: CGSize) -> UIImage? {
-    //        UIGraphicsBeginImageContextWithOptions(size, false, 0)
-    //        guard let context = UIGraphicsGetCurrentContext() else { return nil }
-    //
-    //        // 繪製圓形漸變
-    //        let colors = [UIColor.white.cgColor, UIColor.clear.cgColor] as CFArray
-    //        let locations: [CGFloat] = [0.0, 1.0]
-    //        guard let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(),
-    //                                        colors: colors,
-    //                                        locations: locations) else { return nil }
-    //
-    //        let center = CGPoint(x: size.width/2, y: size.height/2)
-    //        context.drawRadialGradient(gradient,
-    //                                   startCenter: center,
-    //                                   startRadius: 0,
-    //                                   endCenter: center,
-    //                                   endRadius: size.width/2,
-    //                                   options: .drawsBeforeStartLocation)
-    //
-    //        let image = UIGraphicsGetImageFromCurrentImageContext()
-    //        UIGraphicsEndImageContext()
-    //        return image
-    //    }
-    
-    
     
     override func prepareForReuse() {
         super.prepareForReuse()
         
         gradientLayer.removeFromSuperlayer()
-        //            setupColorChange()
         
-        //莉子動畫
+        //粒子動畫
         //        emitterLayer.removeFromSuperlayer()
-        //        setupEmitter()
+        //        emitterLayer.setupDefaultParticleEffect(in: bounds)
+        //        contentView.layer.insertSublayer(emitterLayer, at: 0)
     }
-    
     
     private func setupAnimatedBackground(aqiValue: Int) {
         // 創建一個遵循協議的配置
@@ -345,14 +232,8 @@ class AQITableViewCell: UITableViewCell {
         // 應用動畫
         let config = AQIGradientConfig(aqiValue: aqiValue)
         gradientLayer.applyWaveAnimation(with: config)
-        
         contentView.layer.insertSublayer(gradientLayer, at: 0)
-        
-        
     }
-    
-    
-    
     
     // 配置 Cell 內容的方法
     func configure(stationName: String,
@@ -404,14 +285,13 @@ class AQITableViewCell: UITableViewCell {
             
         }
         
+        // 重新設置粒子效果
+        //        emitterLayer.removeFromSuperlayer()
+        //        emitterLayer.setupDefaultParticleEffect(in: bounds)
+        //        contentView.layer.insertSublayer(emitterLayer, at: 0)
         
-        //        // 重新設置粒子效果
-        //            emitterLayer.removeFromSuperlayer()
-        //            setupEmitter()
-        //        dateLabel.text = date
+        //                dateLabel.text = date
         
-        // 重新設置漸變動畫
-        //            setupColorChange()
     }
 }
 

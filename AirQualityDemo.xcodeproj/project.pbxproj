@@ -20,6 +20,7 @@
 		D048B8B02D1BF696004D1F12 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D048B8AF2D1BF696004D1F12 /* Assets.xcassets */; };
 		D048B8B32D1BF696004D1F12 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D048B8B12D1BF696004D1F12 /* LaunchScreen.storyboard */; };
 		D048B8BB2D1BFDF9004D1F12 /* BurgerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D048B8BA2D1BFDF9004D1F12 /* BurgerTableViewCell.swift */; };
+		D04D49272D38B23800464B53 /* Ex+ParticleEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = D04D49262D38B23800464B53 /* Ex+ParticleEffect.swift */; };
 		D064CB062D3741DC0053EEDA /* Ex+UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D064CB052D3741DC0053EEDA /* Ex+UILabel.swift */; };
 		D077790E2D1E3E0D00F23034 /* SchedulePage.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D077790D2D1E3E0D00F23034 /* SchedulePage.storyboard */; };
 		D07779102D1E45D100F23034 /* SchedulePageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D077790F2D1E45D100F23034 /* SchedulePageVC.swift */; };
@@ -54,6 +55,7 @@
 		9B7965836B467471B36ED16B /* Pods-AirQualityDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirQualityDemo.debug.xcconfig"; path = "Target Support Files/Pods-AirQualityDemo/Pods-AirQualityDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		C2ED8CEBC899543BB12BFB4A /* Pods_AirQualityDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirQualityDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD99748F920E42000C2045EE /* Pods-BurgerTabelDemoT.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BurgerTabelDemoT.release.xcconfig"; path = "Target Support Files/Pods-BurgerTabelDemoT/Pods-BurgerTabelDemoT.release.xcconfig"; sourceTree = "<group>"; };
+		D026203C2D37B8CB00B3F800 /* Myoffice.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Myoffice.gpx; sourceTree = "<group>"; };
 		D02B5C822D2B6A04003E8ECC /* WeatherDetailViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = WeatherDetailViewController.storyboard; sourceTree = "<group>"; };
 		D02B5C852D2CBDA7003E8ECC /* WeatherDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDetailViewController.swift; sourceTree = "<group>"; };
 		D02B5C892D2FBC7F003E8ECC /* WeatherDetailViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDetailViewLayout.swift; sourceTree = "<group>"; };
@@ -68,6 +70,7 @@
 		D048B8B22D1BF696004D1F12 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D048B8B42D1BF696004D1F12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D048B8BA2D1BFDF9004D1F12 /* BurgerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurgerTableViewCell.swift; sourceTree = "<group>"; };
+		D04D49262D38B23800464B53 /* Ex+ParticleEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ex+ParticleEffect.swift"; sourceTree = "<group>"; };
 		D064CB052D3741DC0053EEDA /* Ex+UILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ex+UILabel.swift"; sourceTree = "<group>"; };
 		D077790D2D1E3E0D00F23034 /* SchedulePage.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SchedulePage.storyboard; sourceTree = "<group>"; };
 		D077790F2D1E45D100F23034 /* SchedulePageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulePageVC.swift; sourceTree = "<group>"; };
@@ -173,6 +176,7 @@
 				D0F354EA2D2242AA007D1A3A /* Extension */,
 				D048B8AF2D1BF696004D1F12 /* Assets.xcassets */,
 				D048B8B42D1BF696004D1F12 /* Info.plist */,
+				D026203C2D37B8CB00B3F800 /* Myoffice.gpx */,
 			);
 			path = AirQualityDemo;
 			sourceTree = "<group>";
@@ -259,6 +263,7 @@
 				D02B5C8F2D310C6E003E8ECC /* Ex+CAGradientLayer.swift */,
 				D0B50E822D35104D00F3C744 /* Ex+Date.swift */,
 				D064CB052D3741DC0053EEDA /* Ex+UILabel.swift */,
+				D04D49262D38B23800464B53 /* Ex+ParticleEffect.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -406,6 +411,7 @@
 				D02B5C862D2CBDA7003E8ECC /* WeatherDetailViewController.swift in Sources */,
 				D064CB062D3741DC0053EEDA /* Ex+UILabel.swift in Sources */,
 				D08535852D3655D300D8D902 /* AirQualityDataManager.swift in Sources */,
+				D04D49272D38B23800464B53 /* Ex+ParticleEffect.swift in Sources */,
 				D02B5C902D310C6E003E8ECC /* Ex+CAGradientLayer.swift in Sources */,
 				D0C1A03E2D2660F10014A90D /* RestManager.swift in Sources */,
 				D048B8A92D1BF695004D1F12 /* SceneDelegate.swift in Sources */,
