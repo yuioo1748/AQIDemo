@@ -65,7 +65,20 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
     // 更新 cityLabel 的文字
     private lazy var cityLabel: UILabel = {
         let label = UILabel()
-        label.text = stationInfo?.station.siteName ?? "無測站資料"  // 使用測站名稱
+        // 判斷數據來源並設置站點名稱
+        if let stationInfo = stationInfo {
+            // 使用 stationInfo 的站點名稱（最近站點）
+            label.text = stationInfo.station.siteName
+        } else if !todayRecords.isEmpty {
+            // 使用今日數據的站點名稱（收藏站點）
+            label.text = todayRecords[0].siteName
+        } else if !records.isEmpty {
+            // 使用歷史數據的站點名稱（收藏站點）
+            label.text = records[0].siteName
+        } else {
+            // 如果都沒有數據，顯示預設文字
+            label.text = "無測站資料"
+        }
         label.font = .systemFont(ofSize: 35, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.applyShadow()
@@ -157,8 +170,6 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         //        button.addTarget(self, action: #selector(detailsButtonTapped(_:)), for: .touchUpInside)
         return button
     }()
-    
-    // 上一頁傳遞的空汙數值
     
     // 上一頁傳遞的空汙數值
     private lazy var pm25Value: String = {

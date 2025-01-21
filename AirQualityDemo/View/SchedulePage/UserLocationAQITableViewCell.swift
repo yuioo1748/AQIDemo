@@ -1,5 +1,5 @@
 //
-//  AQITableViewCell.swift
+//  UserLactionAQITableViewCell.swift
 //  AirQualityDemo
 //
 //  Created by AndyHsieh on 2025/1/3.
@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class AQITableViewCell: UITableViewCell {
+class UserLocationAQITableViewCell: UITableViewCell {
     //    private let emitterLayer = CAEmitterLayer() //粒子效果
     private let gradientLayer = CAGradientLayer()
     
@@ -17,6 +17,7 @@ class AQITableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.applyShadow(opacity: 0.3)
         return label
     }()
     
@@ -25,6 +26,7 @@ class AQITableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 10)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.applyShadow(opacity: 0.3)
         return label
     }()
     
@@ -33,6 +35,7 @@ class AQITableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 10)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.applyShadow(opacity: 0.3)
         return label
     }()
     
@@ -41,6 +44,7 @@ class AQITableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 50)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.applyShadow(opacity: 0.3)
         return label
     }()
     
@@ -49,6 +53,7 @@ class AQITableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 10)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.applyShadow(opacity: 0.3)
         return label
     }()
     
@@ -57,6 +62,7 @@ class AQITableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.applyShadow(opacity: 0.3)
         return label
     }()
     
@@ -65,6 +71,7 @@ class AQITableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 6, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.applyShadow(opacity: 0.3)
         return label
     }()
     
@@ -73,6 +80,7 @@ class AQITableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.applyShadow(opacity: 0.3)
         return label
     }()
     
@@ -81,6 +89,7 @@ class AQITableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.applyShadow(opacity: 0.3)
         return label
     }()
     
@@ -89,6 +98,7 @@ class AQITableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 6, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.applyShadow(opacity: 0.3)
         return label
     }()
     
@@ -97,6 +107,7 @@ class AQITableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.applyShadow(opacity: 0.3)
         return label
     }()
     
@@ -202,6 +213,18 @@ class AQITableViewCell: UITableViewCell {
         gradientLayer.cornerRadius = 20
         gradientLayer.masksToBounds = true
         
+        // 設定內容的間距
+        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0))
+        
+        // 尋找 UISwipeActionPullView
+            if let swipeContainer = self.superview, NSStringFromClass(swipeContainer.classForCoder) == "_UITableViewCellSwipeContainerView" {
+                for subview in swipeContainer.subviews {
+                    if NSStringFromClass(subview.classForCoder) == "UISwipeActionPullView" {
+                        subview.layer.cornerRadius = 12
+                        subview.clipsToBounds = true
+                    }
+                }
+            }
         //粒子效果
         //        emitterLayer.frame = bounds
         //        emitterLayer.emitterPosition = CGPoint(x: bounds.width / 2, y: bounds.height / 2)

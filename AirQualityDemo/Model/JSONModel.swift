@@ -234,16 +234,16 @@ extension StationRecord {
         
         return CLLocation(latitude: lat, longitude: lon)
     }
-
-//    func distance(from userLocation: CLLocation) -> CLLocationDistance? {
-//        guard let stationLocation = self.location else {
-//            return nil
-//        }
-//        return userLocation.distance(from: stationLocation)
-//    }
+    
+    //    func distance(from userLocation: CLLocation) -> CLLocationDistance? {
+    //        guard let stationLocation = self.location else {
+    //            return nil
+    //        }
+    //        return userLocation.distance(from: stationLocation)
+    //    }
 }
 
-// 在 ViewController 中
+
 enum RecordType {
     case record(Record)
     case detailedRecord(TodayRecord)
@@ -284,6 +284,24 @@ extension RecordType {
             return record.pm25SubIndex
         case .detailedRecord(let detailedRecord):
             return detailedRecord.pm25
+        }
+    }
+    
+    var siteName: String {
+        switch self {
+        case .record(let record):
+            return record.siteName
+        case .detailedRecord(let record):
+            return record.siteName
+        }
+    }
+    
+    var updateTime: String {
+        switch self {
+        case .record(let record):
+            return record.monitorDate
+        case .detailedRecord(let record):
+            return record.publishTime
         }
     }
 }

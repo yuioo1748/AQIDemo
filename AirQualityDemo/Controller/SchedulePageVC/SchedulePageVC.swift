@@ -10,6 +10,33 @@ import FSCalendar
 import CoreLocation
 
 class SchedulePageVC: UIViewController {
+    
+    // 添加顯示模式的列舉
+    private enum DisplayMode {
+        case nearest    // 顯示最近的站點
+        case favorites  // 顯示收藏的站點
+    }
+    
+    // 修改屬性以存儲測站和距離
+    var nearestStationInfo: (station: StationRecord, distance: Double)?
+    
+    // 資料源
+    // 儲存篩選後的記錄
+    var filteredAqiRecords: [Record] = [] //非當日AQI
+    var filteredTodayAqiRecords: [TodayRecord] = [] //當日AQI
+    
+    private var currentDisplayMode: DisplayMode = .nearest
+    // 儲存收藏站點的資料
+    private var favoriteStationsHistoricalData: [FavoriteStationHistoricalData] = [] //非當日AQI
+    private var favoriteStationsTodayData: [FavoriteStationTodayData] = [] //當日AQI
+    
+    struct FavoriteStationTodayData {
+        let todayRecord: TodayRecord
+    }
+    struct FavoriteStationHistoricalData {
+        let record: Record
+    }
+    
     private let locationManager = LocationManager.shared
     private let today = Date()
     
@@ -22,7 +49,6 @@ class SchedulePageVC: UIViewController {
     var _monthChevronImgView = UIImageView() //日曆按鈕，顯示展開或收起
     private let chevronWidth: CGFloat = 12 // 新的寬度
     private let chevronHeight: CGFloat = 12 // 高度保持不變
-    
     private var isCalendarExpanded = false // 記錄日曆是否展開
     
     // 使用靜態方法初始化圖片
@@ -51,15 +77,6 @@ class SchedulePageVC: UIViewController {
     private lazy var tableViewCalendarExpandedConstraint: NSLayoutConstraint = {
         return tableView.topAnchor.constraint(equalTo: calendar.bottomAnchor, constant: 10)
     }()
-    
-    // 修改屬性以存儲測站和距離
-    var nearestStationInfo: (station: StationRecord, distance: Double)?
-    
-    // 資料源
-    // 新增一個屬性存儲篩選後的記錄
-    var filteredAqiRecords: [Record] = [] //非當日AQI
-    var filteredTodayAqiRecords: [TodayRecord] = [] //當日AQI
-    
     
     private lazy var calendar: FSCalendar = {
         let calendar = FSCalendar()
@@ -112,6 +129,15 @@ class SchedulePageVC: UIViewController {
         locationManager.startUpdatingLocation()
         findNearestStation()
         
+        // 註冊通知監聽
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleFavoriteStationDidSave(_:)),
+            name: SearchViewController.favoriteStationDidSaveNotification,
+            object: nil
+        )
+        // 載入已儲存的站點
+        loadTodayDataFavoriteStations()
     }
     
     private func setRightBarButtonItems() {
@@ -131,7 +157,7 @@ class SchedulePageVC: UIViewController {
         addButton.setImage(addImg, for: .normal)
         addButton.setTitle(" ", for: .normal)
         addButton.setTitleColor(.white, for: .normal)
-        //        addButton.addTarget(self, action: #selector(handleBack), for: .touchUpInside)
+        addButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(navigateSearchViewController)))
         
         // 設置按鈕的邊距
         addButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10) // 調整按鈕邊距
@@ -140,10 +166,7 @@ class SchedulePageVC: UIViewController {
         // 設定 UIButton 為 UIBarButtonItem 的 customView
         let addButtonImage = UIBarButtonItem(customView: addButton)
         
-        
-        
         navigationItem.rightBarButtonItems = [addButtonImage, todayImage]
-        
     }
     
     //客製化展開收起日曆按鈕
@@ -167,14 +190,12 @@ class SchedulePageVC: UIViewController {
         dateFormatter.dateFormat = "MM" // 只取月份
         let monthString = dateFormatter.string(from: calendar.currentPage) // 取得當前顯示月份
         
-        
         _monthLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 32))
         _monthLabel.adjustsFontSizeToFitWidth = true // 允許文字大小自動調整以適應寬度
         _monthLabel.textAlignment = .left  // 文字左對齊
         _monthLabel.textColor = .white  // 文字顏色設為白色
         _monthLabel.font = .init(name: "HelveticaNeue-Bold", size: 16)  // 設定粗體字型
         _monthLabel.text = "\(monthString)月"  // 設定預設文字
-        
         
         // 創建月份旁的向下箭頭圖示
         _monthChevronImgView = UIImageView(frame: CGRect(x: 0.0, y: 0.0, width: 16, height: 12))
@@ -201,7 +222,7 @@ class SchedulePageVC: UIViewController {
         containerView.backgroundColor = .black  // 設定背景為黑色
         containerView.layer.cornerRadius = 16  // 設定圓角
         containerView.isUserInteractionEnabled = true  // 啟用使用者互動
-        containerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(leftButtonTapped)))
+        containerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(expandCalendar)))
         containerView.addSubview(stackView)
         
         // 設定自動佈局約束
@@ -241,10 +262,9 @@ class SchedulePageVC: UIViewController {
             calendar.calendarWeekdayView.weekdayLabels[index].text = weekday
             
         }
-        
     }
     
-    @objc func leftButtonTapped() {
+    @objc func expandCalendar() {
         isCalendarExpanded.toggle()
         
         // 根據展開狀態更換圖片
@@ -282,6 +302,7 @@ class SchedulePageVC: UIViewController {
             }
         }
     }
+    
     private static func createCalendarImageWithText(text: String) -> UIImage? {
         guard let originalImage = UIImage(named: "calendar") else { return nil }
         
@@ -329,7 +350,8 @@ class SchedulePageVC: UIViewController {
         tableView.separatorStyle = .none
         
         // 註冊自定義 Cell
-        tableView.register(AQITableViewCell.self, forCellReuseIdentifier: "AQICell")
+        tableView.register(UserLocationAQITableViewCell.self, forCellReuseIdentifier: "UserLocationAQICell")
+        tableView.register(FavoriteLocationAQITableViewCell.self, forCellReuseIdentifier: "FavoriteLocationAQICell") // 新的 Cell 類型
         
         NSLayoutConstraint.activate([
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
@@ -338,7 +360,10 @@ class SchedulePageVC: UIViewController {
         ])
     }
     
-    
+    // 記得在 deinit 中移除觀察者
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 }
 
 // MARK: - Calendar
@@ -374,17 +399,19 @@ extension SchedulePageVC:FSCalendarDelegate, FSCalendarDataSource  {
                     }
                     
                     // 重置非當日資料
-                                        self?.filteredAqiRecords = []
+                    self?.filteredAqiRecords = []
                     
                     // 重新載入 TableView
-                                       DispatchQueue.main.async {
-                                           self?.tableView.reloadData()
-                                       }
+                    DispatchQueue.main.async {
+                        self?.tableView.reloadData()
+                    }
                     
                 case .failure(let error):
                     print("錯誤: \(error)")
                 }
             }
+            loadTodayDataFavoriteStations()
+            
         } else{
             // 查詢 AQI 資料 (非當日
             RestManager.shared.getAQIData(limit: 1000) { [weak self] result in
@@ -397,17 +424,19 @@ extension SchedulePageVC:FSCalendarDelegate, FSCalendarDataSource  {
                         
                     }
                     // 重置當日資料
-                                        self?.filteredTodayAqiRecords = []
-                                        
-                                        // 重新載入 TableView
-                                        DispatchQueue.main.async {
-                                            self?.tableView.reloadData()
-                                        }
+                    self?.filteredTodayAqiRecords = []
+                    
+                    // 重新載入 TableView
+                    DispatchQueue.main.async {
+                        self?.tableView.reloadData()
+                    }
                     
                 case .failure(let error):
                     print("錯誤: \(error)")
                 }
             }
+            
+            loadHistoricalDataFavoriteStations(selectedDateString: selectedDateString)
         }
     }
 }
@@ -415,50 +444,126 @@ extension SchedulePageVC:FSCalendarDelegate, FSCalendarDataSource  {
 // MARK: - TableView
 extension SchedulePageVC:UITableViewDelegate, UITableViewDataSource  {
     
+    // 設定 section 數量
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2  // 第一個 section 為最近站點，第二個為收藏站點
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //優先顯示當日資料，如果沒有當日資料，則顯示歷史資料
-               return !filteredTodayAqiRecords.isEmpty ? filteredTodayAqiRecords.count :
-                      !filteredAqiRecords.isEmpty ? filteredAqiRecords.count : 0
+        switch section {
+        case 0:  // 最近站點
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let selectedDate = calendar.selectedDate ?? today
+            let selectedDateString = dateFormatter.string(from: selectedDate)
+            let todayDateString = dateFormatter.string(from: today)
+            
+            if selectedDateString == todayDateString && !filteredTodayAqiRecords.isEmpty {
+                return filteredTodayAqiRecords.count
+            } else if !filteredAqiRecords.isEmpty {
+                return filteredAqiRecords.count
+            }
+            return 0
+            
+        case 1:  // 收藏站點
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let selectedDateString = dateFormatter.string(from: calendar.selectedDate ?? today)
+            let todayDateString = dateFormatter.string(from: today)
+            
+            if selectedDateString == todayDateString && !favoriteStationsTodayData.isEmpty {
+                return favoriteStationsTodayData.count
+            } else if !favoriteStationsHistoricalData.isEmpty {
+                return favoriteStationsHistoricalData.count
+            }
+            return 0
+            
+        default:
+            return 0
+        }
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "空氣品質指標AQI"
+        switch section {
+        case 0:
+            return "最近站點"
+        case 1:
+            return "收藏站點"
+        default:
+            return nil
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "AQICell", for: indexPath) as? AQITableViewCell,
-              let nearestStationInfo = nearestStationInfo else {
-            return UITableViewCell()
-        }
-        // 判斷要使用哪個資料源
-            let recordType: RecordType
-        
-        // 根據當前選擇的日期是否為今天來決定使用哪個資料源
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let selectedDateString = dateFormatter.string(from: calendar.selectedDate ?? today)
-        let todayDateString = dateFormatter.string(from: today)
-        
-        if selectedDateString == todayDateString || !filteredTodayAqiRecords.isEmpty {
-            // 如果選擇的是今天，且有當日資料，優先使用當日資料
-            recordType = .detailedRecord(filteredTodayAqiRecords[indexPath.row])
-        } else {
-            // 否則使用非當日資料
+        switch indexPath.section {
+        case 0:  // 最近站點
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "UserLocationAQICell", for: indexPath) as? UserLocationAQITableViewCell else {
+                return UITableViewCell()
+            }
+            if let nearestStationInfo = nearestStationInfo {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+                let selectedDateString = dateFormatter.string(from: calendar.selectedDate ?? today)
+                let todayDateString = dateFormatter.string(from: today)
+                
+                let recordType: RecordType
+                if selectedDateString == todayDateString && !filteredTodayAqiRecords.isEmpty {
+                    // 確保是今天且有當天資料
+                    recordType = .detailedRecord(filteredTodayAqiRecords[indexPath.row])
+                } else if !filteredAqiRecords.isEmpty {
+                    // 如果有歷史資料就使用歷史資料
                     recordType = .record(filteredAqiRecords[indexPath.row])
-        }
-        
-        cell.configure(
-                stationName: nearestStationInfo.station.siteName,
-                distance: nearestStationInfo.distance,
+                } else {
+                    // 如果兩者都沒有資料，返回未配置的 cell
+                    return cell
+                }
+                
+                cell.configure(
+                    stationName: nearestStationInfo.station.siteName,
+                    distance: nearestStationInfo.distance,
+                    aqi: recordType.aqi,
+                    date: "",
+                    pm10: recordType.pm10,
+                    pm25: recordType.pm25,
+                    recordType: recordType
+                )
+            }
+            return cell
+        case 1:  // 收藏站點
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "FavoriteLocationAQICell", for: indexPath) as? FavoriteLocationAQITableViewCell else {
+                return UITableViewCell()
+            }
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let selectedDateString = dateFormatter.string(from: calendar.selectedDate ?? today)
+            let todayDateString = dateFormatter.string(from: today)
+            
+            let recordType: RecordType
+            if selectedDateString == todayDateString && !favoriteStationsTodayData.isEmpty {
+                // 確保是今天且有當天資料
+                recordType = .detailedRecord(favoriteStationsTodayData[indexPath.row].todayRecord)
+            } else if !favoriteStationsHistoricalData.isEmpty {
+                // 如果有歷史資料就使用歷史資料
+                recordType = .record(favoriteStationsHistoricalData[indexPath.row].record)
+            } else {
+                // 如果兩者都沒有資料，返回未配置的 cell
+                return cell
+            }
+            
+            cell.configure(
+                stationName: recordType.siteName,
+                updateTime: recordType.updateTime,
                 aqi: recordType.aqi,
-                date: "", //先不顯示
                 pm10: recordType.pm10,
                 pm25: recordType.pm25,
                 recordType: recordType
             )
-        
-        return cell
+            return cell
+        default:
+            return UITableViewCell()
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -466,40 +571,78 @@ extension SchedulePageVC:UITableViewDelegate, UITableViewDataSource  {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // 取得被選中的 Cell
-        guard let cell = tableView.cellForRow(at: indexPath) as? AQITableViewCell else { return }
-        
-        
-        // 執行展開動畫
-        UIView.animate(withDuration: 0.3, animations: {
-            cell.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
-        }) { _ in
-            // 動畫完成後恢復原狀
-            UIView.animate(withDuration: 0.2, animations: {
-                cell.transform = .identity
-            }) { _ in
-                
-                // 跳轉到詳細頁面
-                self.navigateToDetailPage(for: indexPath)
-            }
+        switch indexPath.section {
+        case 0:
+            // 使用者位置的 cell
+            guard let cell = tableView.cellForRow(at: indexPath) as? UserLocationAQITableViewCell else { return }
+            animateAndNavigate(cell: cell, indexPath: indexPath)
+            
+        case 1:
+            // 收藏位置的 cell
+            guard let cell = tableView.cellForRow(at: indexPath) as? FavoriteLocationAQITableViewCell else { return }
+            animateAndNavigate(cell: cell, indexPath: indexPath)
+            
+        default:
+            break
         }
     }
     
+    // 啟用滑動刪除功能
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        // 只有收藏站點區域可以刪除
+        return indexPath.section == 1
+    }
     
-    // 跳轉到詳細頁面的方法
-    private func navigateToDetailPage(for indexPath: IndexPath) {
-        // 創建要跳轉的頁面
-        let detailVC = WeatherDetailViewController() // 替換為你的 ViewController
+    // 設定滑動動作
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        // 只處理收藏站點區域
+        guard indexPath.section == 1 else { return nil }
         
-        // 傳遞資料
-        detailVC.records = self.filteredAqiRecords
-        detailVC.todayRecords = self.filteredTodayAqiRecords
-        detailVC.stationInfo = self.nearestStationInfo
+        // 創建刪除動作
+        let deleteAction = UIContextualAction(style: .destructive, title: "") { [weak self] (action, view, completion) in
+            self?.deleteStation(at: indexPath)
+            completion(true)
+        }
+        
+        deleteAction.image = UIImage(systemName: "trash") // SF Symbols 名稱
+        
+        // 設定滑動動作的配置
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        return configuration
+    }
+    
+    // 修改跳轉到詳細頁面的方法
+    private func navigateToDetailPage(for indexPath: IndexPath) {
+        let detailVC = WeatherDetailViewController()
+        
+        switch indexPath.section {
+        case 0:  // 最近站點
+            detailVC.records = self.filteredAqiRecords
+            detailVC.todayRecords = self.filteredTodayAqiRecords
+            detailVC.stationInfo = self.nearestStationInfo
+            
+        case 1:  // 收藏站點
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let selectedDateString = dateFormatter.string(from: calendar.selectedDate ?? today)
+            let todayDateString = dateFormatter.string(from: today)
+            
+            if selectedDateString == todayDateString && !favoriteStationsTodayData.isEmpty {
+                // 今天的資料
+                let stationData = favoriteStationsTodayData[indexPath.row]
+                detailVC.todayRecords = [stationData.todayRecord]
+            } else if !favoriteStationsHistoricalData.isEmpty {
+                // 歷史資料
+                let stationData = favoriteStationsHistoricalData[indexPath.row]
+                detailVC.records = [stationData.record]
+            }
+            
+        default:
+            break
+        }
         
         navigationController?.pushViewController(detailVC, animated: true)
     }
-    
-    
 }
 
 // MARK: - 打api取值
@@ -542,18 +685,17 @@ extension SchedulePageVC {
                     print("距離：\(Int(distance/1000))公里")
                     print("AQI：\(record.aqi)")
                     // 載入當日 AQI 資料
-                                    DispatchQueue.main.async {
-                                        self?.loadTodayAQIData()
-                                        self?.tableView.reloadData()
-                                    }
-                                }
-                            case .failure(let error):
-                                print("錯誤：\(error)")
-                            }
-                        }
+                    DispatchQueue.main.async {
+                        self?.loadTodayAQIData()
+                        self?.tableView.reloadData()
                     }
- 
-    // 新增這個方法
+                }
+            case .failure(let error):
+                print("錯誤：\(error)")
+            }
+        }
+    }
+    
     func loadTodayAQIData() {
         // 確保有最近的測站資訊
         guard let nearestStationInfo = nearestStationInfo else {
@@ -571,15 +713,15 @@ extension SchedulePageVC {
                     
                 }
                 
-                // 使用篩選後的第一筆資料
-                           if let firstRecord = self?.filteredTodayAqiRecords.first {
-                               // 例如在獲取 AQI 資料後
-                               AirQualityDataManager.shared.saveLatestAQIData(
-                                   aqi: firstRecord.aqi,
-                                   status: firstRecord.status,
-                                   siteName: nearestStationInfo.station.siteName
-                               )
-                           }
+                //                // 使用篩選後的第一筆資料（之後用做於Widget
+                //                if let firstRecord = self?.filteredTodayAqiRecords.first {
+                //                    // 例如在獲取 AQI 資料後
+                //                    AirQualityDataManager.shared.saveLatestAQIData(
+                //                        aqi: firstRecord.aqi,
+                //                        status: firstRecord.status,
+                //                        siteName: nearestStationInfo.station.siteName
+                //                    )
+                //                }
                 
                 // 更新 TableView
                 DispatchQueue.main.async {
@@ -593,7 +735,184 @@ extension SchedulePageVC {
         }
         
     }
+}
+
+extension SchedulePageVC {
     
+    // 跳轉到詳細頁面的方法
+    @objc private func navigateSearchViewController() {
+        // 創建要跳轉的頁面
+        let searchVC = SearchViewController() // 替換為你的 ViewController
+        navigationController?.pushViewController(searchVC, animated: true)
+    }
     
+    // 處理通知的方法
+    @objc private func handleFavoriteStationDidSave(_ notification: Notification) {
+        if let stationName = notification.userInfo?["stationName"] as? String {
+            print("新增收藏站點：\(stationName)")
+            loadTodayDataFavoriteStations() // 重新載入收藏站點
+        }
+    }
     
+    // 讀取已儲存站點的資料 當天
+    private func loadTodayDataFavoriteStations() {
+        let favoriteStations = UserDefaults.standard.stringArray(forKey: "FavoriteStations") ?? []
+        print("目前收藏的站點：\(favoriteStations)")
+        
+        // 清空現有的收藏站點資料
+        favoriteStationsHistoricalData.removeAll()
+        favoriteStationsTodayData.removeAll()
+        
+        // 針對每個收藏的站點取得今日資料
+        for stationName in favoriteStations {
+            loadTodayAQIDataForStation(stationName: stationName)
+        }
+    }
+    
+    // 根據站點名稱取得今日空氣品質資料
+    private func loadTodayAQIDataForStation(stationName: String) {
+        RestManager.shared.getTodayAQIData(limit: 1000) { [weak self] result in
+            switch result {
+            case .success(let response):
+                // 篩選特定站點的資料
+                let stationRecords = response.records.filter { record in
+                    record.siteName == stationName
+                }
+                
+                // 如果有資料，以第一筆為代表
+                if let firstRecord = stationRecords.first {
+                    DispatchQueue.main.async {
+                        // 建立新的 FavoriteStationData
+                        let stationData = FavoriteStationTodayData(
+                            todayRecord: firstRecord
+                        )
+                        
+                        // 將資料加入到陣列中
+                        // 檢查是否已經存在相同站點的資料
+                        if let existingIndex = self?.favoriteStationsTodayData.firstIndex(where: { $0.todayRecord.siteName == stationName }) {
+                            // 更新現有資料
+                            self?.favoriteStationsTodayData[existingIndex] = stationData
+                        } else {
+                            // 加入新資料
+                            self?.favoriteStationsTodayData.append(stationData)
+                        }
+                        
+                        print("站點：\(stationName)")
+                        print("AQI：\(firstRecord.aqi)")
+                        print("狀態：\(firstRecord.status)")
+                        print("PM2.5：\(firstRecord.pm25)")
+                        print("PM10：\(firstRecord.pm10)")
+                        print("----------------------")
+                        
+                        // 重新載入 TableView
+                        self?.tableView.reloadData()
+                    }
+                }
+                
+            case .failure(let error):
+                print("取得 \(stationName) 今日空氣品質資料失敗：\(error)")
+            }
+        }
+    }
+    
+    // 讀取已儲存站點的資料 非當天
+    private func loadHistoricalDataFavoriteStations(selectedDateString: String) {
+        let favoriteStations = UserDefaults.standard.stringArray(forKey: "FavoriteStations") ?? []
+        
+        // 清空現有的收藏站點資料
+        favoriteStationsHistoricalData.removeAll()
+        favoriteStationsTodayData.removeAll()
+        
+        // 針對每個收藏的站點取得歷史資料
+        for stationName in favoriteStations {
+            loadHistoricalAQIDataForStation(stationName: stationName, selectedDateString: selectedDateString)
+        }
+    }
+    
+    // 根據站點名稱取得選擇日的空氣品質資料
+    private func loadHistoricalAQIDataForStation(stationName: String, selectedDateString: String) {
+        print("開始載入歷史資料 - 站點: \(stationName), 日期: \(selectedDateString)") // 偵錯用
+        
+        RestManager.shared.getAQIData(limit: 1000) { [weak self] result in
+            switch result {
+            case .success(let response):
+                
+                // 篩選特定站點和日期的資料
+                let stationRecords = response.records.filter { record in
+                    let isStationMatch = record.siteName == stationName
+                    let isDateMatch = record.monitorDate.hasPrefix(selectedDateString)
+                    
+                    return isDateMatch && isStationMatch
+                }
+                print("篩選後資料筆數: \(stationRecords.count)")
+                
+                // 如果有資料，以第一筆為代表
+                if let firstRecord = stationRecords.first {
+                    DispatchQueue.main.async {
+                        // 建立新的 FavoriteStationHistoricalData
+                        let stationData = FavoriteStationHistoricalData(
+                            record: firstRecord
+                        )
+                        
+                        // 將資料加入到陣列中
+                        if let existingIndex = self?.favoriteStationsHistoricalData.firstIndex(where: { $0.record.siteName == stationName }) {
+                            self?.favoriteStationsHistoricalData[existingIndex] = stationData
+                        } else {
+                            self?.favoriteStationsHistoricalData.append(stationData)
+                        }
+                        
+                        // 重新載入 TableView
+                        self?.tableView.reloadData()
+                    }
+                } else {
+                    print("未找到符合條件的資料")
+                }
+                
+            case .failure(let error):
+                print("取得 \(stationName) 空氣品質資料失敗：\(error)")
+            }
+        }
+    }
+    
+    private func deleteStation(at indexPath: IndexPath) {
+        // 獲取要刪除的站點資料
+        let stationToDelete = favoriteStationsTodayData[indexPath.row]
+        
+        // 從 UserDefaults 中獲取目前的收藏站點
+        var favoriteStations = UserDefaults.standard.stringArray(forKey: "FavoriteStations") ?? []
+        
+        // 從陣列中移除該站點
+        if let index = favoriteStations.firstIndex(of: stationToDelete.todayRecord.siteName) {
+            favoriteStations.remove(at: index)
+            
+            // 更新 UserDefaults
+            UserDefaults.standard.set(favoriteStations, forKey: "FavoriteStations")
+            
+            // 從顯示資料中移除
+            favoriteStationsTodayData.remove(at: indexPath.row)
+            
+            // 更新 TableView
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            
+            // 可以加入提示訊息
+            //                let message = "已移除 \(stationToDelete.station.siteName)"
+            //                showDeleteAlert(message: message)
+        }
+    }
+    
+    //tableView didSelectRowAt 的跳轉方法
+    private func animateAndNavigate(cell: UITableViewCell, indexPath: IndexPath) {
+        // 執行展開動畫
+        UIView.animate(withDuration: 0.3, animations: {
+            cell.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+        }) { _ in
+            // 動畫完成後恢復原狀
+            UIView.animate(withDuration: 0.2, animations: {
+                cell.transform = .identity
+            }) { _ in
+                // 跳轉到詳細頁面
+                self.navigateToDetailPage(for: indexPath)
+            }
+        }
+    }
 }
