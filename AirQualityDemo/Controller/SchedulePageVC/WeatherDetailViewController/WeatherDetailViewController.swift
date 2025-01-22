@@ -104,11 +104,18 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         return label
     }()
     
+    // 先建立一個容器 View
+    private lazy var smallLabelsContainerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.alpha = 0 // 初始設定為隱藏
+        return view
+    }()
+    
     private lazy var smallAqiLabel: UILabel = {
         let label = UILabel()
         label.text = todayRecords.first?.aqi ?? records.first?.aqi ?? "0"  // 顯示 AQI 值
         label.font = .systemFont(ofSize: 20, weight: .regular)
-        label.alpha = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         label.applyShadow()
         return label
@@ -118,7 +125,6 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         let label = UILabel()
         label.text = "(AQI)"  // 顯示 AQI 值
         label.font = .systemFont(ofSize: 10, weight: .bold)
-        label.alpha = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         label.applyShadow()
         return label
@@ -128,7 +134,6 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         let label = UILabel()
         label.text = "|"  // 顯示 AQI 值
         label.font = .systemFont(ofSize: 20, weight: .regular)
-        label.alpha = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         label.applyShadow()
         return label
@@ -151,7 +156,6 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
     private lazy var smallAqiStatusLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .medium)
-        label.alpha = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         label.applyShadow(opacity: 0.1)
         // 設定初始值
@@ -258,15 +262,23 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         contentView.addSubview(cityLabel)
         contentView.addSubview(largeAqiLabel)
         contentView.addSubview(aqiUnitLabel)
-        contentView.addSubview(smallAqiLabel)
-        contentView.addSubview(smallAqiUnitLabel)
-        contentView.addSubview(smallSeparatorLabel)
+//        contentView.addSubview(smallAqiLabel)
+//        contentView.addSubview(smallAqiUnitLabel)
+//        contentView.addSubview(smallSeparatorLabel)
         contentView.addSubview(aqiStatusLabel)
-        contentView.addSubview(smallAqiStatusLabel)
+//        contentView.addSubview(smallAqiStatusLabel)
         contentView.addSubview(airInfoTableView)
         
         customTabBarView.addSubview(weatherTabButton)
         customTabBarView.addSubview(detailsTabButton)
+        
+        contentView.addSubview(smallLabelsContainerView)
+        
+        // 將元件加入容器
+        smallLabelsContainerView.addSubview(smallAqiLabel)
+        smallLabelsContainerView.addSubview(smallAqiUnitLabel)
+        smallLabelsContainerView.addSubview(smallSeparatorLabel)
+        smallLabelsContainerView.addSubview(smallAqiStatusLabel)
         
     }
     
@@ -300,21 +312,21 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
             aqiUnitLabel.leadingAnchor.constraint(equalTo: largeAqiLabel.trailingAnchor, constant: 3),
             aqiUnitLabel.bottomAnchor.constraint(equalTo: largeAqiLabel.bottomAnchor, constant: -24),
             
-            smallAqiLabel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 40),
-            smallAqiLabel.trailingAnchor.constraint(equalTo: contentView.centerXAnchor, constant: -35),
-            
-            smallAqiUnitLabel.leadingAnchor.constraint(equalTo: smallAqiLabel.trailingAnchor, constant: 1),
-            smallAqiUnitLabel.bottomAnchor.constraint(equalTo: smallAqiLabel.bottomAnchor, constant: -3),
-            
-            smallSeparatorLabel.leadingAnchor.constraint(equalTo: smallAqiUnitLabel.trailingAnchor, constant: 4),
-            smallSeparatorLabel.bottomAnchor.constraint(equalTo: smallAqiLabel.bottomAnchor, constant: -3),
+//            smallAqiLabel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 40),
+//            smallAqiLabel.trailingAnchor.constraint(equalTo: contentView.centerXAnchor, constant: -35),
+//            
+//            smallAqiUnitLabel.leadingAnchor.constraint(equalTo: smallAqiLabel.trailingAnchor, constant: 1),
+//            smallAqiUnitLabel.bottomAnchor.constraint(equalTo: smallAqiLabel.bottomAnchor, constant: -3),
+//            
+//            smallSeparatorLabel.leadingAnchor.constraint(equalTo: smallAqiUnitLabel.trailingAnchor, constant: 4),
+//            smallSeparatorLabel.bottomAnchor.constraint(equalTo: smallAqiLabel.bottomAnchor, constant: -3),
             
             // AQI 狀態 Label 的約束
             aqiStatusLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             aqiStatusLabel.topAnchor.constraint(equalTo: largeAqiLabel.bottomAnchor, constant: -3),
             
-            smallAqiStatusLabel.leadingAnchor.constraint(equalTo: smallSeparatorLabel.trailingAnchor, constant: 4),
-            smallAqiStatusLabel.bottomAnchor.constraint(equalTo: smallAqiLabel.bottomAnchor, constant: -2),
+//            smallAqiStatusLabel.leadingAnchor.constraint(equalTo: smallSeparatorLabel.trailingAnchor, constant: 4),
+//            smallAqiStatusLabel.bottomAnchor.constraint(equalTo: smallAqiLabel.bottomAnchor, constant: -2),
             
             // TableView 的約束
             //            tableView.topAnchor.constraint(equalTo: aqiStatusLabel.bottomAnchor, constant: 20),
@@ -324,7 +336,25 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
             
         ])
         
-        
+        // smallAQI物件
+            NSLayoutConstraint.activate([
+                smallLabelsContainerView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+                smallLabelsContainerView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 50),
+                
+                // 設定內部元件的約束
+                smallAqiLabel.leadingAnchor.constraint(equalTo: smallLabelsContainerView.leadingAnchor),
+                smallAqiLabel.centerYAnchor.constraint(equalTo: smallLabelsContainerView.centerYAnchor),
+                
+                smallAqiUnitLabel.leadingAnchor.constraint(equalTo: smallAqiLabel.trailingAnchor, constant: 1),
+                smallAqiUnitLabel.bottomAnchor.constraint(equalTo: smallAqiLabel.bottomAnchor, constant: -3),
+                
+                smallSeparatorLabel.leadingAnchor.constraint(equalTo: smallAqiUnitLabel.trailingAnchor, constant: 4),
+                smallSeparatorLabel.centerYAnchor.constraint(equalTo: smallAqiLabel.centerYAnchor),
+                
+                smallAqiStatusLabel.leadingAnchor.constraint(equalTo: smallSeparatorLabel.trailingAnchor, constant: 4),
+                smallAqiStatusLabel.centerYAnchor.constraint(equalTo: smallAqiLabel.centerYAnchor),
+                smallAqiStatusLabel.trailingAnchor.constraint(equalTo: smallLabelsContainerView.trailingAnchor)
+            ])
         
         // TabBar 約束
         NSLayoutConstraint.activate([
@@ -385,10 +415,11 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         // 小標籤漸變效果（70-100）
         let smallAqiAlpha = offsetY > 70 ?
         min(1, (offsetY - 70) / 30) : 0
-        smallAqiLabel.alpha = smallAqiAlpha
-        smallAqiUnitLabel.alpha = smallAqiAlpha
-        smallSeparatorLabel.alpha = smallAqiAlpha
-        smallAqiStatusLabel.alpha = smallAqiAlpha
+//        smallAqiLabel.alpha = smallAqiAlpha
+//        smallAqiUnitLabel.alpha = smallAqiAlpha
+//        smallSeparatorLabel.alpha = smallAqiAlpha
+//        smallAqiStatusLabel.alpha = smallAqiAlpha
+        smallLabelsContainerView.alpha = smallAqiAlpha
         
         
         // cityLabel 位置計算

@@ -763,9 +763,28 @@ extension SchedulePageVC {
         favoriteStationsHistoricalData.removeAll()
         favoriteStationsTodayData.removeAll()
         
-        // 針對每個收藏的站點取得今日資料
-        for stationName in favoriteStations {
-            loadTodayAQIDataForStation(stationName: stationName)
+        // 一次取得所有資料
+        RestManager.shared.getTodayAQIData(limit: 1000) { [weak self] result in
+            switch result {
+            case .success(let response):
+                // 一次篩選所有需要的站點資料
+                let filteredRecords = response.records.filter { record in
+                    favoriteStations.contains(record.siteName)
+                }
+                
+                // 將篩選後的資料轉換成 FavoriteStationTodayData
+                let stationDataArray = filteredRecords.map { record in
+                    FavoriteStationTodayData(todayRecord: record)
+                }
+                
+                DispatchQueue.main.async {
+                    self?.favoriteStationsTodayData = stationDataArray
+                    self?.tableView.reloadData()
+                }
+                
+            case .failure(let error):
+                print("取得空氣品質資料失敗：\(error)")
+            }
         }
     }
     
@@ -823,9 +842,29 @@ extension SchedulePageVC {
         favoriteStationsHistoricalData.removeAll()
         favoriteStationsTodayData.removeAll()
         
-        // 針對每個收藏的站點取得歷史資料
-        for stationName in favoriteStations {
-            loadHistoricalAQIDataForStation(stationName: stationName, selectedDateString: selectedDateString)
+        // 一次取得所有資料
+        RestManager.shared.getAQIData(limit: 1000) { [weak self] result in
+            switch result {
+            case .success(let response):
+                // 一次篩選所有需要的站點和日期資料
+                let filteredRecords = response.records.filter { record in
+                    favoriteStations.contains(record.siteName) &&
+                    record.monitorDate.hasPrefix(selectedDateString)
+                }
+                
+                // 將篩選後的資料轉換成 FavoriteStationHistoricalData
+                let stationDataArray = filteredRecords.map { record in
+                    FavoriteStationHistoricalData(record: record)
+                }
+                
+                DispatchQueue.main.async {
+                    self?.favoriteStationsHistoricalData = stationDataArray
+                    self?.tableView.reloadData()
+                }
+                
+            case .failure(let error):
+                print("取得空氣品質資料失敗：\(error)")
+            }
         }
     }
     
@@ -875,28 +914,31 @@ extension SchedulePageVC {
     }
     
     private func deleteStation(at indexPath: IndexPath) {
-        // 獲取要刪除的站點資料
-        let stationToDelete = favoriteStationsTodayData[indexPath.row]
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let selectedDateString = dateFormatter.string(from: calendar.selectedDate ?? today)
+        let todayDateString = dateFormatter.string(from: today)
         
-        // 從 UserDefaults 中獲取目前的收藏站點
-        var favoriteStations = UserDefaults.standard.stringArray(forKey: "FavoriteStations") ?? []
-        
-        // 從陣列中移除該站點
-        if let index = favoriteStations.firstIndex(of: stationToDelete.todayRecord.siteName) {
-            favoriteStations.remove(at: index)
-            
-            // 更新 UserDefaults
-            UserDefaults.standard.set(favoriteStations, forKey: "FavoriteStations")
-            
-            // 從顯示資料中移除
+        // 確定要刪除的站點名稱
+        let stationName: String
+        if selectedDateString == todayDateString && !favoriteStationsTodayData.isEmpty {
+            stationName = favoriteStationsTodayData[indexPath.row].todayRecord.siteName
             favoriteStationsTodayData.remove(at: indexPath.row)
+        } else if !favoriteStationsHistoricalData.isEmpty {
+            stationName = favoriteStationsHistoricalData[indexPath.row].record.siteName
+            favoriteStationsHistoricalData.remove(at: indexPath.row)
+        } else {
+            return  // 如果沒有資料，直接返回
+        }
+        
+        // 從 UserDefaults 中獲取並更新收藏站點
+        var favoriteStations = UserDefaults.standard.stringArray(forKey: "FavoriteStations") ?? []
+        if let index = favoriteStations.firstIndex(of: stationName) {
+            favoriteStations.remove(at: index)
+            UserDefaults.standard.set(favoriteStations, forKey: "FavoriteStations")
             
             // 更新 TableView
             tableView.deleteRows(at: [indexPath], with: .fade)
-            
-            // 可以加入提示訊息
-            //                let message = "已移除 \(stationToDelete.station.siteName)"
-            //                showDeleteAlert(message: message)
         }
     }
     
