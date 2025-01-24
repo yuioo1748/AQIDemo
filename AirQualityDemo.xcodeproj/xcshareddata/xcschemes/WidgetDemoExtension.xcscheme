@@ -15,9 +15,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D085356F2D3653D800D8D902"
-               BuildableName = "AirQualityWidgetExtension.appex"
-               BlueprintName = "AirQualityWidgetExtension"
+               BlueprintIdentifier = "D0544B0F2D421547008DBE15"
+               BuildableName = "WidgetDemoExtension.appex"
+               BlueprintName = "WidgetDemoExtension"
                ReferencedContainer = "container:AirQualityDemo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -61,9 +61,9 @@
          BundleIdentifier = "com.apple.springboard">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D085356F2D3653D800D8D902"
-            BuildableName = "AirQualityWidgetExtension.appex"
-            BlueprintName = "AirQualityWidgetExtension"
+            BlueprintIdentifier = "D0544B0F2D421547008DBE15"
+            BuildableName = "WidgetDemoExtension.appex"
+            BlueprintName = "WidgetDemoExtension"
             ReferencedContainer = "container:AirQualityDemo.xcodeproj">
          </BuildableReference>
       </RemoteRunnable>
@@ -79,7 +79,7 @@
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "_XCWidgetKind"
-            value = ""
+            value = "WidgetTest"
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
@@ -90,6 +90,36 @@
          <EnvironmentVariable
             key = "_XCWidgetFamily"
             value = "systemMedium"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "_XCWidgetKind"
+            value = ""
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "_XCWidgetFamily"
+            value = "medium"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "_XCWidgetDefaultView"
+            value = "timeline"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "_XCWidgetKind"
+            value = "WidgetTest"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "_XCWidgetFamily"
+            value = "medium"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "_XCWidgetDefaultView"
+            value = "timeline"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>

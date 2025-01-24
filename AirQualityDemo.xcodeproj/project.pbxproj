@@ -21,6 +21,12 @@
 		D048B8B32D1BF696004D1F12 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D048B8B12D1BF696004D1F12 /* LaunchScreen.storyboard */; };
 		D048B8BB2D1BFDF9004D1F12 /* BurgerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D048B8BA2D1BFDF9004D1F12 /* BurgerTableViewCell.swift */; };
 		D04D49272D38B23800464B53 /* Ex+ParticleEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = D04D49262D38B23800464B53 /* Ex+ParticleEffect.swift */; };
+		D0544B112D421547008DBE15 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0DA05772D362F9B00639D12 /* WidgetKit.framework */; };
+		D0544B122D421547008DBE15 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0DA05792D362F9B00639D12 /* SwiftUI.framework */; };
+		D0544B152D421547008DBE15 /* WidgetDemoBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0544B142D421547008DBE15 /* WidgetDemoBundle.swift */; };
+		D0544B172D421547008DBE15 /* WidgetDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0544B162D421547008DBE15 /* WidgetDemo.swift */; };
+		D0544B192D421549008DBE15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0544B182D421549008DBE15 /* Assets.xcassets */; };
+		D0544B1D2D421549008DBE15 /* WidgetDemoExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D0544B102D421547008DBE15 /* WidgetDemoExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		D064CB062D3741DC0053EEDA /* Ex+UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D064CB052D3741DC0053EEDA /* Ex+UILabel.swift */; };
 		D077790E2D1E3E0D00F23034 /* SchedulePage.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D077790D2D1E3E0D00F23034 /* SchedulePage.storyboard */; };
 		D07779102D1E45D100F23034 /* SchedulePageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D077790F2D1E45D100F23034 /* SchedulePageVC.swift */; };
@@ -40,6 +46,16 @@
 		D0F354EC2D2243C0007D1A3A /* Ex+UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F354EB2D2243C0007D1A3A /* Ex+UIImage.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		D0544B1B2D421549008DBE15 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D048B89B2D1BF695004D1F12 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0544B0F2D421547008DBE15;
+			remoteInfo = WidgetDemoExtension;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		D0DA05882D362F9C00639D12 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -47,6 +63,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				D0544B1D2D421549008DBE15 /* WidgetDemoExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -74,6 +91,15 @@
 		D048B8B42D1BF696004D1F12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D048B8BA2D1BFDF9004D1F12 /* BurgerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurgerTableViewCell.swift; sourceTree = "<group>"; };
 		D04D49262D38B23800464B53 /* Ex+ParticleEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ex+ParticleEffect.swift"; sourceTree = "<group>"; };
+		D0544B0B2D4214E0008DBE15 /* AirQualityDemoRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AirQualityDemoRelease.entitlements; sourceTree = "<group>"; };
+		D0544B102D421547008DBE15 /* WidgetDemoExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgetDemoExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		D0544B142D421547008DBE15 /* WidgetDemoBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDemoBundle.swift; sourceTree = "<group>"; };
+		D0544B162D421547008DBE15 /* WidgetDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDemo.swift; sourceTree = "<group>"; };
+		D0544B182D421549008DBE15 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D0544B1A2D421549008DBE15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D0544B212D4215E6008DBE15 /* WidgetDemoExtensionRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WidgetDemoExtensionRelease.entitlements; sourceTree = "<group>"; };
+		D0544B222D4217A4008DBE15 /* AirQualityDemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AirQualityDemo.entitlements; sourceTree = "<group>"; };
+		D0544B232D4217B3008DBE15 /* WidgetDemoExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WidgetDemoExtension.entitlements; sourceTree = "<group>"; };
 		D064CB052D3741DC0053EEDA /* Ex+UILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ex+UILabel.swift"; sourceTree = "<group>"; };
 		D077790D2D1E3E0D00F23034 /* SchedulePage.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SchedulePage.storyboard; sourceTree = "<group>"; };
 		D077790F2D1E45D100F23034 /* SchedulePageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulePageVC.swift; sourceTree = "<group>"; };
@@ -102,6 +128,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				5FFBFC52F974FE458C2BC63E /* Pods_AirQualityDemo.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D0544B0D2D421547008DBE15 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D0544B122D421547008DBE15 /* SwiftUI.framework in Frameworks */,
+				D0544B112D421547008DBE15 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,7 +190,10 @@
 		D048B89A2D1BF695004D1F12 = {
 			isa = PBXGroup;
 			children = (
+				D0544B232D4217B3008DBE15 /* WidgetDemoExtension.entitlements */,
+				D0544B212D4215E6008DBE15 /* WidgetDemoExtensionRelease.entitlements */,
 				D048B8A52D1BF695004D1F12 /* AirQualityDemo */,
+				D0544B132D421547008DBE15 /* WidgetDemo */,
 				D048B8A42D1BF695004D1F12 /* Products */,
 				729E69C64569CA045C0788DD /* Pods */,
 				F3616A5F182EE1563148FACF /* Frameworks */,
@@ -166,6 +204,7 @@
 			isa = PBXGroup;
 			children = (
 				D048B8A32D1BF695004D1F12 /* AirQualityDemo.app */,
+				D0544B102D421547008DBE15 /* WidgetDemoExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -173,6 +212,8 @@
 		D048B8A52D1BF695004D1F12 /* AirQualityDemo */ = {
 			isa = PBXGroup;
 			children = (
+				D0544B222D4217A4008DBE15 /* AirQualityDemo.entitlements */,
+				D0544B0B2D4214E0008DBE15 /* AirQualityDemoRelease.entitlements */,
 				D048B8A62D1BF695004D1F12 /* AppDelegate.swift */,
 				D048B8A82D1BF695004D1F12 /* SceneDelegate.swift */,
 				D048B8B12D1BF696004D1F12 /* LaunchScreen.storyboard */,
@@ -188,6 +229,17 @@
 				D079DA5F2D38E0AE00F0FB0F /* MyLocation.gpx */,
 			);
 			path = AirQualityDemo;
+			sourceTree = "<group>";
+		};
+		D0544B132D421547008DBE15 /* WidgetDemo */ = {
+			isa = PBXGroup;
+			children = (
+				D0544B142D421547008DBE15 /* WidgetDemoBundle.swift */,
+				D0544B162D421547008DBE15 /* WidgetDemo.swift */,
+				D0544B182D421549008DBE15 /* Assets.xcassets */,
+				D0544B1A2D421549008DBE15 /* Info.plist */,
+			);
+			path = WidgetDemo;
 			sourceTree = "<group>";
 		};
 		D079DA612D38FDA500F0FB0F /* SearchViewController */ = {
@@ -331,11 +383,29 @@
 			buildRules = (
 			);
 			dependencies = (
+				D0544B1C2D421549008DBE15 /* PBXTargetDependency */,
 			);
 			name = AirQualityDemo;
 			productName = BurgerTabelDemoT;
 			productReference = D048B8A32D1BF695004D1F12 /* AirQualityDemo.app */;
 			productType = "com.apple.product-type.application";
+		};
+		D0544B0F2D421547008DBE15 /* WidgetDemoExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D0544B1E2D421549008DBE15 /* Build configuration list for PBXNativeTarget "WidgetDemoExtension" */;
+			buildPhases = (
+				D0544B0C2D421547008DBE15 /* Sources */,
+				D0544B0D2D421547008DBE15 /* Frameworks */,
+				D0544B0E2D421547008DBE15 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WidgetDemoExtension;
+			productName = WidgetDemoExtension;
+			productReference = D0544B102D421547008DBE15 /* WidgetDemoExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -348,6 +418,9 @@
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
 					D048B8A22D1BF695004D1F12 = {
+						CreatedOnToolsVersion = 15.2;
+					};
+					D0544B0F2D421547008DBE15 = {
 						CreatedOnToolsVersion = 15.2;
 					};
 				};
@@ -366,6 +439,7 @@
 			projectRoot = "";
 			targets = (
 				D048B8A22D1BF695004D1F12 /* AirQualityDemo */,
+				D0544B0F2D421547008DBE15 /* WidgetDemoExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -381,6 +455,14 @@
 				D048B8B02D1BF696004D1F12 /* Assets.xcassets in Resources */,
 				D048B8AE2D1BF695004D1F12 /* Main.storyboard in Resources */,
 				D079DA662D38FEC700F0FB0F /* SearchViewController.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D0544B0E2D421547008DBE15 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D0544B192D421549008DBE15 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -460,7 +542,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D0544B0C2D421547008DBE15 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D0544B172D421547008DBE15 /* WidgetDemo.swift in Sources */,
+				D0544B152D421547008DBE15 /* WidgetDemoBundle.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D0544B1C2D421549008DBE15 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0544B0F2D421547008DBE15 /* WidgetDemoExtension */;
+			targetProxy = D0544B1B2D421549008DBE15 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		D048B8AC2D1BF695004D1F12 /* Main.storyboard */ = {
@@ -608,11 +707,13 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AirQualityDemo/AirQualityDemo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6YP6282P95;
+				DEVELOPMENT_TEAM = ZP4X48498Q;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AirQualityDemo/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "需要位置權限以顯示最近的空氣品質監測站";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -624,7 +725,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.andyH.AirQualityDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.andyTest.AirQualityDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -639,11 +740,13 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AirQualityDemo/AirQualityDemoRelease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6YP6282P95;
+				DEVELOPMENT_TEAM = ZP4X48498Q;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AirQualityDemo/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "需要位置權限以顯示最近的空氣品質監測站";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -655,8 +758,68 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.andyH.AirQualityDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.andyTest.AirQualityDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D0544B1F2D421549008DBE15 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = WidgetDemoExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ZP4X48498Q;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WidgetDemo/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = WidgetDemo;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.andyTest.AirQualityDemo.WidgetTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D0544B202D421549008DBE15 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = WidgetDemoExtensionRelease.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ZP4X48498Q;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WidgetDemo/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = WidgetDemo;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.andyTest.AirQualityDemo.WidgetTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -680,6 +843,15 @@
 			buildConfigurations = (
 				D048B8B82D1BF696004D1F12 /* Debug */,
 				D048B8B92D1BF696004D1F12 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D0544B1E2D421549008DBE15 /* Build configuration list for PBXNativeTarget "WidgetDemoExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D0544B1F2D421549008DBE15 /* Debug */,
+				D0544B202D421549008DBE15 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
