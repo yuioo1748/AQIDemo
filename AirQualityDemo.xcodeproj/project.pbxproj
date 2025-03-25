@@ -43,6 +43,10 @@
 		D0C1A0452D267E060014A90D /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C1A0442D267E060014A90D /* LocationManager.swift */; };
 		D0C1A0482D2792910014A90D /* UserLocationAQITableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C1A0472D2792910014A90D /* UserLocationAQITableViewCell.swift */; };
 		D0C1A04A2D27B95A0014A90D /* Ex+UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C1A0492D27B95A0014A90D /* Ex+UIColor.swift */; };
+		D0C5CAEB2D433ABB00C8D901 /* AirQualityDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08535842D3655D300D8D902 /* AirQualityDataManager.swift */; };
+		D0C5CAED2D433D4000C8D901 /* WidgetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C5CAEC2D433D4000C8D901 /* WidgetModel.swift */; };
+		D0C5CAEE2D433D4F00C8D901 /* WidgetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C5CAEC2D433D4000C8D901 /* WidgetModel.swift */; };
+		D0C5CAEF2D438BBA00C8D901 /* JSONModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C1A0402D2665080014A90D /* JSONModel.swift */; };
 		D0F354EC2D2243C0007D1A3A /* Ex+UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F354EB2D2243C0007D1A3A /* Ex+UIImage.swift */; };
 /* End PBXBuildFile section */
 
@@ -117,6 +121,7 @@
 		D0C1A0442D267E060014A90D /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		D0C1A0472D2792910014A90D /* UserLocationAQITableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserLocationAQITableViewCell.swift; sourceTree = "<group>"; };
 		D0C1A0492D27B95A0014A90D /* Ex+UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ex+UIColor.swift"; sourceTree = "<group>"; };
+		D0C5CAEC2D433D4000C8D901 /* WidgetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetModel.swift; sourceTree = "<group>"; };
 		D0DA05772D362F9B00639D12 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		D0DA05792D362F9B00639D12 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		D0F354EB2D2243C0007D1A3A /* Ex+UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ex+UIImage.swift"; sourceTree = "<group>"; };
@@ -339,6 +344,7 @@
 			isa = PBXGroup;
 			children = (
 				D0C1A0402D2665080014A90D /* JSONModel.swift */,
+				D0C5CAEC2D433D4000C8D901 /* WidgetModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -532,6 +538,7 @@
 				D02B5C862D2CBDA7003E8ECC /* WeatherDetailViewController.swift in Sources */,
 				D064CB062D3741DC0053EEDA /* Ex+UILabel.swift in Sources */,
 				D08535852D3655D300D8D902 /* AirQualityDataManager.swift in Sources */,
+				D0C5CAED2D433D4000C8D901 /* WidgetModel.swift in Sources */,
 				D04D49272D38B23800464B53 /* Ex+ParticleEffect.swift in Sources */,
 				D02B5C902D310C6E003E8ECC /* Ex+CAGradientLayer.swift in Sources */,
 				D0C1A03E2D2660F10014A90D /* RestManager.swift in Sources */,
@@ -546,6 +553,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0C5CAEF2D438BBA00C8D901 /* JSONModel.swift in Sources */,
+				D0C5CAEB2D433ABB00C8D901 /* AirQualityDataManager.swift in Sources */,
+				D0C5CAEE2D433D4F00C8D901 /* WidgetModel.swift in Sources */,
 				D0544B172D421547008DBE15 /* WidgetDemo.swift in Sources */,
 				D0544B152D421547008DBE15 /* WidgetDemoBundle.swift in Sources */,
 			);

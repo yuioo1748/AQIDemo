@@ -88,7 +88,9 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
     // 更新 largeAqiLabel 顯示 AQI 值
     private lazy var largeAqiLabel: UILabel = {
         let label = UILabel()
-        label.text = todayRecords.first?.aqi ?? records.first?.aqi ?? "0"  // 顯示 AQI 值
+        label.text = validAQI(from: todayRecords.first?.aqi)
+                    ?? validAQI(from: records.first?.aqi)
+                    ?? " "
         label.font = .systemFont(ofSize: 96, weight: .thin)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.applyShadow()
@@ -114,7 +116,9 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
     
     private lazy var smallAqiLabel: UILabel = {
         let label = UILabel()
-        label.text = todayRecords.first?.aqi ?? records.first?.aqi ?? "0"  // 顯示 AQI 值
+        label.text = validAQI(from: todayRecords.first?.aqi)
+                    ?? validAQI(from: records.first?.aqi)
+                    ?? " "
         label.font = .systemFont(ofSize: 20, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.applyShadow()
@@ -491,6 +495,11 @@ class WeatherDetailViewController: UIViewController, UIScrollViewDelegate {
         
         // 設定 style 屬性
         airInfoTableView.sectionHeaderTopPadding = 1  // iOS 15 及以上
+    }
+    
+    func validAQI(from value: String?) -> String? {
+        guard let value = value, !value.isEmpty else { return nil }
+        return value
     }
 }
 

@@ -126,6 +126,14 @@ class SchedulePageVC: UIViewController {
         tableViewTopConstraint.isActive = true
         tableViewCalendarExpandedConstraint.isActive = false
         
+        // 設置位置更新監聽
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleLocationUpdate(_:)),
+            name: NSNotification.Name("LocationUpdated"),
+            object: nil
+        )
+        
         locationManager.startUpdatingLocation()
         findNearestStation()
         
@@ -667,8 +675,7 @@ extension SchedulePageVC {
     
     // 取得最近測站和最近距離，在 findNearestStation 中加入更多偵錯
     private func fetchAirQualityData(with location: CLLocation) {
-        print("----(進畫面取得)------------------------------------")
-        //        print("使用者位置：\(location.coordinate.latitude), \(location.coordinate.longitude)")
+    //        print("使用者位置：\(location.coordinate.latitude), \(location.coordinate.longitude)")
         
         RestManager.shared.getAirQualityWithLocation(userLocation: location) { [weak self] result in
             switch result {
@@ -713,15 +720,22 @@ extension SchedulePageVC {
                     
                 }
                 
-                //                // 使用篩選後的第一筆資料（之後用做於Widget
-                //                if let firstRecord = self?.filteredTodayAqiRecords.first {
-                //                    // 例如在獲取 AQI 資料後
-                //                    AirQualityDataManager.shared.saveLatestAQIData(
-                //                        aqi: firstRecord.aqi,
-                //                        status: firstRecord.status,
-                //                        siteName: nearestStationInfo.station.siteName
-                //                    )
-                //                }
+                //使用篩選後的第一筆資料（用做於Widget
+                if let firstRecord = self?.filteredTodayAqiRecords.first {
+                    print("準備儲存資料到 Widget")
+                    AirQualityDataManager.shared.saveLatestAQIData(
+                        aqi: firstRecord.aqi,
+                        status: firstRecord.status,
+                        siteName: nearestStationInfo.station.siteName,
+                        pm25: firstRecord.pm25,
+                        pm10: firstRecord.pm10,
+                        o3: firstRecord.o3,
+                        co: firstRecord.co,
+                        so2: firstRecord.so2,
+                        no2: firstRecord.no2
+                    )
+                    
+                }
                 
                 // 更新 TableView
                 DispatchQueue.main.async {
@@ -958,3 +972,26 @@ extension SchedulePageVC {
         }
     }
 }
+
+// MARK: -
+extension SchedulePageVC {
+    
+    //位置更新時，執行 findNearestStation() 來取得最近測站並更新畫面
+    @objc private func handleLocationUpdate(_ notification: Notification) {
+        print("接收到位置更新，觸發 findNearestStation()")
+        findNearestStation()
+    }
+
+
+    //當 App 從背景回到前景時觸發
+    func refreshPageData() {
+        // 重新定位最近測站
+        locationManager.startUpdatingLocation()
+        findNearestStation()
+        
+        // 重新載入收藏站點資料
+        loadTodayDataFavoriteStations()
+    }
+    
+}
+

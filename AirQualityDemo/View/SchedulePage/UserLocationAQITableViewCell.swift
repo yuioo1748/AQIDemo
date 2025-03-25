@@ -174,27 +174,27 @@ class UserLocationAQITableViewCell: UITableViewCell {
             aqiValueLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
             aqiValueLabel.trailingAnchor.constraint(equalTo: aqiUnitLabel.leadingAnchor, constant: 0),
             
-            //pm10
-            pmOfPM10Label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            pmOfPM10Label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -110),
-            
-            tenLabel.leadingAnchor.constraint(equalTo: pmOfPM10Label.trailingAnchor, constant: 0),
-            tenLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            
-            pm10ValueLabel.leadingAnchor.constraint(equalTo: tenLabel.trailingAnchor, constant: 3),
-            pm10ValueLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            
-            
             //pm25
             pmOfPM25Label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            pmOfPM25Label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -50),
+            pmOfPM25Label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -110),
             
             twoFiveLabel.leadingAnchor.constraint(equalTo: pmOfPM25Label.trailingAnchor, constant: 0),
             twoFiveLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             
             pm25ValueLabel.leadingAnchor.constraint(equalTo: twoFiveLabel.trailingAnchor, constant: 3),
-            pm25ValueLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
             pm25ValueLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
+            
+            
+            //pm10
+            pmOfPM10Label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
+            pmOfPM10Label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -50),
+            
+            tenLabel.leadingAnchor.constraint(equalTo: pmOfPM10Label.trailingAnchor, constant: 0),
+            tenLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
+            
+            pm10ValueLabel.leadingAnchor.constraint(equalTo: tenLabel.trailingAnchor, constant: 3),
+            pm10ValueLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
+            pm10ValueLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
             
             //            // 監測時間
             //            dateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
@@ -289,9 +289,9 @@ class UserLocationAQITableViewCell: UITableViewCell {
                 print("無法將 AQI 值 '\(aqi)' 轉換為 Int")
             }
             
-            aqiValueLabel.text = record.aqi
-            pm10ValueLabel.text = record.pm10SubIndex
-            pm25ValueLabel.text = record.pm25SubIndex
+            aqiValueLabel.text = (record.aqi.isEmpty == false) ? record.aqi : "--"
+            pm10ValueLabel.text = (record.pm10SubIndex.isEmpty == false) ? record.pm10SubIndex : "--"
+            pm25ValueLabel.text = (record.pm25SubIndex.isEmpty == false) ? record.pm25SubIndex : "--"
             
         case .detailedRecord(let detailedRecord):
             
@@ -302,9 +302,9 @@ class UserLocationAQITableViewCell: UITableViewCell {
                 print("無法將 AQI 值 '\(aqi)' 轉換為 Int")
             }
             
-            aqiValueLabel.text = detailedRecord.aqi
-            pm10ValueLabel.text = detailedRecord.pm10
-            pm25ValueLabel.text = detailedRecord.pm25
+            aqiValueLabel.text = (detailedRecord.aqi.isEmpty == false) ? detailedRecord.aqi : "--"
+            pm10ValueLabel.text = (detailedRecord.pm10.isEmpty == false) ? detailedRecord.pm10 : "--"
+            pm25ValueLabel.text = (detailedRecord.pm25.isEmpty == false) ? detailedRecord.pm25 : "--"
             
         }
         

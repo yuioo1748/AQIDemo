@@ -185,61 +185,87 @@ extension RestManager {
     
     /// 整合基本資料和過去資料
     func getAirQualityWithLocation(userLocation: CLLocation, completion: @escaping (Result<[(TodayRecord, StationRecord, Double)], Error>) -> Void) {
-        print("使用者位置: 緯度 " + String(userLocation.coordinate.latitude) + ", 經度 " + String(userLocation.coordinate.longitude))
+        // 設定重試參數
+        let maxRetries = 3
+        var currentRetry = 0
         
-        // 取得所有監測站的資料
-        getStations { [weak self] stationResult in
-            switch stationResult {
-            case .success(let stationResponse):
-                print("總站點數: " + String(stationResponse.records.count))
-                
-                // 繼續取得 AQI（空氣品質指標）數據
-                self?.getTodayAQIData(limit: 1000) { aqiResult in
-                    switch aqiResult {
-                    case .success(let aqiResponse):
-                        print("總AQI資料數: " + String(aqiResponse.records.count))
-                        
-                        // 用於儲存符合條件的監測站與其對應的 AQI 資料及距離
-                        var results: [(TodayRecord, StationRecord, Double)] = []
-                        
-                        // 遍歷所有監測站資料
-                        for station in stationResponse.records {
-                            // 確認監測站是否有位置資訊
-                            if let stationLocation = station.location {
-                                // 計算使用者位置與監測站之間的距離
-                                let distance = userLocation.distance(from: stationLocation)
-                                
-                                // 如果距離在50公里內
-                                if distance <= 50000 {
-                                    // 檢查是否有對應的AQI資料
-                                    if let matchingRecord = aqiResponse.records.first(where: { $0.siteId == station.siteId }) {
-                                        // 將匹配到的資料（AQI 資料、監測站資料、距離）加入結果陣列
-                                        results.append((matchingRecord, station, distance))
+        func performRequest() {
+            print("使用者位置: 緯度 " + String(userLocation.coordinate.latitude) + ", 經度 " + String(userLocation.coordinate.longitude))
+            
+            // 取得所有監測站的資料
+            getStations { [weak self] stationResult in
+                switch stationResult {
+                case .success(let stationResponse):
+                    print("總站點數: " + String(stationResponse.records.count))
+                    
+                    // 繼續取得 AQI（空氣品質指標）數據
+                    self?.getTodayAQIData(limit: 1000) { aqiResult in
+                        switch aqiResult {
+                        case .success(let aqiResponse):
+                            print("總AQI資料數: " + String(aqiResponse.records.count))
+                            
+                            // 用於儲存符合條件的監測站與其對應的 AQI 資料及距離
+                            var results: [(TodayRecord, StationRecord, Double)] = []
+                            
+                            // 遍歷所有監測站資料
+                            for station in stationResponse.records {
+                                // 確認監測站是否有位置資訊
+                                if let stationLocation = station.location {
+                                    // 計算使用者位置與監測站之間的距離
+                                    let distance = userLocation.distance(from: stationLocation)
+                                    
+                                    // 如果距離在50公里內
+                                    if distance <= 50000 {
+                                        // 檢查是否有對應的AQI資料
+                                        if let matchingRecord = aqiResponse.records.first(where: { $0.siteId == station.siteId }) {
+                                            // 將匹配到的資料（AQI 資料、監測站資料、距離）加入結果陣列
+                                            results.append((matchingRecord, station, distance))
+                                        }
                                     }
                                 }
                             }
+                            
+                            //根據元組的第3個元素去排列 （<，升序，小到大）
+                            let sortedResults = results.sorted { $0.2 < $1.2 }
+                            
+                            // 只取第一個（最近的）站點
+                            let nearestResult = sortedResults.first.map { [$0] } ?? []
+                            
+                            print("找到 " + String(nearestResult.count) + " 個最近站點")
+                            
+                            // 將結果以成功的方式傳回給 completion
+                            completion(.success(nearestResult))
+                            
+                        case .failure(let error):
+                            // AQI 資料獲取失敗，進行重試
+                            handleRetry(error)
                         }
-                        
-                        //根據元組的第3個元素去排列 （<，升序，小到大）
-                        let sortedResults = results.sorted { $0.2 < $1.2 }
-                        
-                        // 只取第一個（最近的）站點
-                        let nearestResult = sortedResults.first.map { [$0] } ?? []
-                        
-                        print("找到 " + String(nearestResult.count) + " 個最近站點")
-                        
-                        // 將結果以成功的方式傳回給 completion
-                        completion(.success(nearestResult))
-                        
-                    case .failure(let error):
-                        // AQI 資料獲取失敗，將錯誤傳回
-                        completion(.failure(error))
                     }
+                case .failure(let error):
+                    // 監測站資料獲取失敗，進行重試
+                    handleRetry(error)
                 }
-            case .failure(let error):
-                // 監測站資料獲取失敗，將錯誤傳回
+            }
+        }
+        
+        func handleRetry(_ error: Error) {
+            if currentRetry < maxRetries {
+                currentRetry += 1
+                print("網路請求失敗，第 \(currentRetry) 次重試")
+                
+                // 指數退避策略
+                let delay = pow(2.0, Double(currentRetry))
+                DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                    performRequest()
+                }
+            } else {
+                // 重試次數用完，回傳最終錯誤
+                print("網路請求多次重試失敗")
                 completion(.failure(error))
             }
         }
+        
+        // 開始第一次請求
+        performRequest()
     }
 }
